@@ -1,0 +1,98 @@
+LeetCode: 525, 930, 1074
+
+ LeetCode: 525
+
+class Solution {
+public:
+    int findMaxLength(vector<int>& nums) {
+        int n = nums.size();
+        unordered_map<int,int> mp;
+        mp[0] = -1;
+        int result = 0;
+        int cumSum = 0;
+
+        for(int i=0; i<n; i++){
+            cumSum += (nums[i] == 1) ? 1 : -1;
+
+            if(mp.find(cumSum) != mp.end()){
+                result = max(result, i-mp[cumSum]);
+            }else{
+            
+                mp[cumSum] = i;
+
+                }
+            
+        }
+        return result;
+// T.C = O(n)
+  S.C = O(n)
+    }
+};
+
+LeetCode: 930
+class Solution {
+public:
+    int usingMapBasedAproach(vector<int>&nums, int  goal){
+        unordered_map<int,int>mp;
+        int cummutativeSum = 0;
+        int res = 0;
+        mp[0] = 1; //I have saw zero one time
+        for(auto &num: nums){
+            cummutativeSum += num;
+
+            int remainingSum = cummutativeSum-goal;
+
+            if(mp.find(remainingSum) != mp.end()){ //yaha condition me galti ki thi
+                 res += mp[remainingSum];
+            }
+
+            mp[cummutativeSum]++;
+        }
+
+        return res;
+
+}
+   int usingSlidingWindowBased(vector<int>& nums, int goal){
+
+    int n = nums.size();
+    int i = 0;
+    int j = 0;
+
+    int window_sum = 0;
+    int countZeros = 0;
+    int result = 0;
+
+    while(j < i){
+
+        window_sum += j;
+
+       //agar i zero par hai to muJe zero ke badle one add karna hoga result me 
+        while(i < j && (nums[i] == 0 && window_sum > goal)){
+
+            if(nums[i] == 0){
+                countZeros++;
+            }else{
+                countZeros = 0;
+            }
+
+            window_sum -= nums[i];
+            i++;
+        }
+
+        if(window_sum == goal){
+            result += 1+ countZeros;
+        }
+        j++;
+
+
+
+    }
+    return result;
+
+
+   }
+    int numSubarraysWithSum(vector<int>& nums, int goal) {
+        // return usingMapBasedAproach(nums, goal); 
+        return usingSlidingWindowBased(nums, goal);
+    }
+};
